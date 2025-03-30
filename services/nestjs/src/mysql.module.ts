@@ -11,7 +11,7 @@ import { User } from './user.entity';
           host: 'mysql',
           port: 3306,
           username: 'root',
-          password: 'single_deploy',
+          password: process.env['MYSQL_PASSWORD'],
           database: 'single_deploy',
           entities: [User],
           synchronize: true,

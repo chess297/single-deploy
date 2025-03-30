@@ -12,6 +12,7 @@ import { RedisCacheModule } from './redis.module';
   imports: [
     ConfigModule.forRoot({
       load: [configuration],
+      isGlobal: true,
     }),
     MysqlModule,
     RedisCacheModule,
