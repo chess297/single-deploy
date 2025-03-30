@@ -56,7 +56,15 @@ services:
       - "3000:3000"
     networks:
       - single-deploy
-  # nextjs:
+  nextjs-server:
+    build:
+      context: ./services/nextjs
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "3001:3001"
+    networks:
+      - single-deploy
   # react:
 networks:
   single-deploy:
