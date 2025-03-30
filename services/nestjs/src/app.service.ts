@@ -38,7 +38,7 @@ export class AppService {
       console.log('不执行创建 OPEN_CREATE： ', process.env.OPEN_CREATE);
     }
 
-    return 'Hello World!';
+    return 'Hello NestJS!';
   }
 }
 

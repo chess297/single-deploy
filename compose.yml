@@ -52,6 +52,10 @@ services:
       - "8888:8888"
     networks:
       - single-deploy
+    develop:
+      watch:
+        - action: rebuild
+          path: ./services/golang/**/*
   nestjs-server:
     build:
       context: ./services/nestjs
@@ -67,6 +71,10 @@ services:
       - REDIS_HOST=redis
     networks:
       - single-deploy
+    develop:
+      watch:
+        - action: rebuild
+          path: ./services/nestjs/src
   nextjs-server:
     build:
       context: ./services/nextjs
