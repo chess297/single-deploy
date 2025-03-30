@@ -1,0 +1,7 @@
+syntax = "v1"
+
+service golang-api {
+	@handler ping
+	get /ping
+}
+
