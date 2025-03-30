@@ -65,7 +65,15 @@ services:
       - "3001:3001"
     networks:
       - single-deploy
-  # react:
+  react-express:
+    build:
+      context: ./services/react-express
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "3002:3002"
+    networks:
+      - single-deploy
 networks:
   single-deploy:
     driver: bridge
