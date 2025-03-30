@@ -1,10 +1,10 @@
 Name: golang-api
 Host: 0.0.0.0
 Port: 8888
-DatabaseDsn: root:single_deploy@tcp(localhost:3306)/single_deploy?charset=utf8mb4&parseTime=True&loc=Local
+DatabaseDsn: root:single_deploy@tcp(mysql:3306)/single_deploy?charset=utf8mb4&parseTime=True&loc=Local
 OpenPingCreate: true
 RedisConf:
-  Host: 127.0.0.1:6379
+  Host: redis:6379
   Type: node
   Pass: single_deploy
   Tls: false
