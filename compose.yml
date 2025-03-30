@@ -2,6 +2,9 @@ services:
   nginx:
     image: nginx:latest
     restart: always
+    depends_on:
+      - golang-server
+      - nestjs-server
     ports:
       - "80:80"
       - "443:443"
@@ -13,7 +16,7 @@ services:
     networks:
       - single-deploy
   mysql:
-    image: mysql:8.0
+    image: mysql:8.2
     restart: always
     volumes:
       - ./mysql/data:/var/lib/mysql
@@ -42,6 +45,9 @@ services:
       context: ./services/golang
       dockerfile: Dockerfile
     restart: always
+    depends_on:
+      - mysql
+      - redis
     ports:
       - "8888:8888"
     networks:
@@ -51,8 +57,14 @@ services:
       context: ./services/nestjs
       dockerfile: Dockerfile
     restart: always
+    depends_on:
+      - mysql
+      - redis
     ports:
       - "3000:3000"
+    environment:
+      - MYSQL_HOST=mysql
+      - REDIS_HOST=redis
     networks:
       - single-deploy
   nextjs-server:

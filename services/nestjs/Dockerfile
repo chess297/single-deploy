@@ -1,64 +1,51 @@
-###################
-# BUILD FOR LOCAL DEVELOPMENT
-###################
+FROM node:20-alpine AS base
 
-FROM node:20-alpine As development
+# Install dependencies only when needed
+FROM base AS deps
+# Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
+RUN apk add --no-cache libc6-compat
+WORKDIR /app
 
-# 创建应用目录
-WORKDIR /usr/src/app
+# Install dependencies based on the preferred package manager
+COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* .npmrc* ./
+RUN \
+  if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
+  elif [ -f package-lock.json ]; then npm ci; \
+  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm i --frozen-lockfile; \
+  else echo "Lockfile not found." && exit 1; \
+  fi
 
-# 复制应用依赖列表到容器镜像
-# 使用通配符来确保 package.json 和 package-lock.json 被复制
-# 在最开始执行复制操作是为阻止每次代码改变时都再次执行  npm install 命令
-COPY --chown=node:node package*.json ./
 
-# 使用 npm ci 安装应用依赖
-RUN npm ci
+# Rebuild the source code only when needed
+FROM base AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
 
-# 复制源代码
-COPY --chown=node:node . .
+# Next.js collects completely anonymous telemetry data about general usage.
+# Learn more here: https://nextjs.org/telemetry
+# Uncomment the following line in case you want to disable telemetry during the build.
+# ENV NEXT_TELEMETRY_DISABLED=1
 
-# 使用镜像中的node用户(而不是 root 用户)
-USER node
+RUN \
+  if [ -f yarn.lock ]; then yarn run build; \
+  elif [ -f package-lock.json ]; then npm run build; \
+  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm run build; \
+  else echo "Lockfile not found." && exit 1; \
+  fi
 
-###################
-# BUILD FOR PRODUCTION
-###################
+# Production image, copy all the files and run next
+FROM base AS runner
+WORKDIR /app
 
-FROM node:20-alpine As build
+ENV NODE_ENV=production
+# Uncomment the following line in case you want to disable telemetry during runtime.
+# ENV NEXT_TELEMETRY_DISABLED=1
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/.env ./.env
 
-WORKDIR /usr/src/app
-
-COPY --chown=node:node package*.json ./
-
-# 为了运行`npm run build`命令，我们需要使用 Nest CLI，它是一个开发依赖。 
-# 在上一步的构建中，我们使用了`npm ci`安装了所有依赖，
-# 所以我们可以从 development 镜像中直接复制 node_modules
-COPY --chown=node:node --from=development /usr/src/app/node_modules ./node_modules
-
-COPY --chown=node:node . .
-
-# 运行构建命令，创建生产环境下的 bundle
-RUN npm run build
-
-# 设置 NODE_ENV 环境变量
-ENV NODE_ENV production
-
-# 运行 `npm ci` 命令移除存在的 node_modules 目录并传递 `--only=production`参数，以确保只安装生产依赖。
-# 这样我们就可以保证 node_modules 目录尽可能得被优化。
-RUN npm ci --only=production && npm cache clean --force
-
-USER node
-
-###################
-# PRODUCTION
-###################
-
-FROM node:20-alpine As production
-
-# 从 build 镜像中复制构建好的代码到最终的镜像中
-COPY --chown=node:node --from=build /usr/src/app/node_modules ./node_modules
-COPY --chown=node:node --from=build /usr/src/app/dist ./dist
+EXPOSE 3000
 
 # 启动服务
 CMD [ "node", "dist/main.js" ]
