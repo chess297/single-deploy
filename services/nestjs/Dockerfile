@@ -11,9 +11,10 @@ WORKDIR /usr/src/app
 # 使用通配符来确保 package.json 和 package-lock.json 被复制
 # 在最开始执行复制操作是为阻止每次代码改变时都再次执行  npm install 命令
 COPY --chown=node:node package*.json ./
-
+COPY --chown=node:node pnpm-*.yaml ./
+RUN corepack enable pnpm
 # 使用 npm ci 安装应用依赖
-RUN npm ci
+RUN pnpm install --frozen-lockfile
 
 # 复制源代码
 COPY --chown=node:node . .
@@ -37,16 +38,16 @@ COPY --chown=node:node package*.json ./
 COPY --chown=node:node --from=development /usr/src/app/node_modules ./node_modules
 
 COPY --chown=node:node . .
-
+RUN corepack enable pnpm
 # 运行构建命令，创建生产环境下的 bundle
-RUN npm run build
+RUN pnpm run build
 
 # 设置 NODE_ENV 环境变量
 ENV NODE_ENV production
 
 # 运行 `npm ci` 命令移除存在的 node_modules 目录并传递 `--only=production`参数，以确保只安装生产依赖。
 # 这样我们就可以保证 node_modules 目录尽可能得被优化。
-RUN npm ci --only=production && npm cache clean --force
+RUN pnpm install --frozen-lockfile --only=production && pnpm cache clean --force
 
 USER node
 
