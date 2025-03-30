@@ -34,6 +34,8 @@ export class AppService {
         .catch((err) => {
           console.log('Redis 创建用户失败', err);
         });
+    } else {
+      console.log('不执行创建 OPEN_CREATE： ', process.env.OPEN_CREATE);
     }
 
     return 'Hello World!';
