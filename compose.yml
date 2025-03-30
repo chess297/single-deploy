@@ -1,0 +1,49 @@
+services:
+  nginx:
+    image: nginx:latest
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/html:/usr/share/nginx/html
+      - ./nginx/logs:/var/log/nginx
+      - ./nginx/crts:/etc/nginx/crts
+    networks:
+      - single-deploy
+  mysql:
+    image: mysql:8.0
+    restart: always
+    volumes:
+      - ./mysql/data:/var/lib/mysql
+      - ./mysql/logs:/var/log/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    ports:
+      - 3306:3306
+    networks:
+      - single-deploy
+  redis:
+    image: redis
+    restart: always
+    ports:
+      - 6379:6379
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+    volumes:
+      - ./redis/redis.conf:/etc/redis/redis.conf
+      - ./redis/data:/data
+      - ./redis/logs:/var/log/redis
+    networks:
+      - single-deploy
+  # golang:
+  # nestjs:
+  # nextjs:
+  # react:
+networks:
+  single-deploy:
+    driver: bridge
+  app-tier:
+    driver: bridge
