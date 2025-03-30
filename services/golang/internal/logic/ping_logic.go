@@ -29,12 +29,15 @@ func (l *PingLogic) Ping() error {
 	if l.svcCtx.Config.OpenPingCreate {
 		db := user.NewUsersModel(l.svcCtx.Database)
 		now := time.Now()
+		un, pw := randStr(10), randStr(20)
 		db.Insert(l.ctx, &user.Users{
-			Username:   randStr(10),
-			Password:   randStr(20),
+			Username:   un,
+			Password:   pw,
 			CreateTime: now,
 			UpdateTime: now,
 		})
+
+		l.svcCtx.Redis.SetCtx(l.ctx, un, pw)
 	}
 	return nil
 }
