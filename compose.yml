@@ -38,7 +38,15 @@ services:
       - ./redis/logs:/var/log/redis
     networks:
       - single-deploy
-  # golang:
+  golang-server:
+    build:
+      context: ./services/golang
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "8888:8888"
+    networks:
+      - single-deploy
   # nestjs:
   # nextjs:
   # react:
