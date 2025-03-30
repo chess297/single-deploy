@@ -47,7 +47,15 @@ services:
       - "8888:8888"
     networks:
       - single-deploy
-  # nestjs:
+  nestjs-server:
+    build:
+      context: ./services/nestjs
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "3000:3000"
+    networks:
+      - single-deploy
   # nextjs:
   # react:
 networks:
