@@ -17,23 +17,24 @@ export class AppService {
     const password = randomString(20);
     user.username = username;
     user.password = password;
-    this.usersRepository
-      .insert(user)
-      .then(() => {
-        console.log('MySql 创建用户成功');
-      })
-      .catch((err) => {
-        console.log('MySql 创建用户失败', err);
-      });
-
-    this.redis
-      .set(username, password)
-      .then(() => {
-        console.log('Redis 创建用户成功');
-      })
-      .catch((err) => {
-        console.log('Redis 创建用户失败', err);
-      });
+    if (process.env.OPEN_CREATE) {
+      this.usersRepository
+        .insert(user)
+        .then(() => {
+          console.log('MySql 创建用户成功');
+        })
+        .catch((err) => {
+          console.log('MySql 创建用户失败', err);
+        });
+      this.redis
+        .set(username, password)
+        .then(() => {
+          console.log('Redis 创建用户成功');
+        })
+        .catch((err) => {
+          console.log('Redis 创建用户失败', err);
+        });
+    }
 
     return 'Hello World!';
   }
