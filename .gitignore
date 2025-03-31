@@ -7,6 +7,8 @@ redis/logs/**
 nginx/crts/**
 nginx/logs/**
 
+etcd/data/**
+
 .env
 
 .vscode

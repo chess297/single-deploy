@@ -1,20 +1,4 @@
 services:
-  nginx:
-    image: nginx:latest
-    restart: always
-    depends_on:
-      - golang-server
-      - nestjs-server
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./nginx/conf.d:/etc/nginx/conf.d
-      - ./nginx/html:/usr/share/nginx/html
-      - ./nginx/logs:/var/log/nginx
-      - ./nginx/crts:/etc/nginx/crts
-    networks:
-      - single-deploy
   mysql:
     image: mysql:8.2
     restart: always
@@ -38,6 +22,35 @@ services:
       - ./redis/redis.conf:/etc/redis/redis.conf
       - ./redis/data:/data
       - ./redis/logs:/var/log/redis
+    networks:
+      - single-deploy
+  etcd:
+    hostname: etcd
+    image: bitnami/etcd:latest
+    volumes:
+      - "./etcd/data:/bitnami/etcd/data"
+    environment:
+      - ALLOW_NONE_AUTHENTICATION=yes
+      - ETCD_ADVERTISE_CLIENT_URLS=http://0.0.0.0:2379
+    ports:
+      - "2379:2379"
+      - "2380:2380"
+    networks:
+      - single-deploy
+  nginx:
+    image: nginx:latest
+    restart: always
+    depends_on:
+      - golang-server
+      - nestjs-server
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/html:/usr/share/nginx/html
+      - ./nginx/logs:/var/log/nginx
+      - ./nginx/crts:/etc/nginx/crts
     networks:
       - single-deploy
   golang-server:
