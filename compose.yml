@@ -16,11 +16,12 @@ services:
     restart: always
     ports:
       - 6379:6379
-    command: [redis-server, /usr/local/etc/redis.conf]
+
     volumes:
-      - ./redis/redis.conf:/usr/local/etc/redis.conf
       - ./redis/data:/data
       - ./redis/logs:/var/log/redis
+    command:
+      - --requirepass $REDIS_PASSWORD
     networks:
       - single-deploy
   etcd:
@@ -69,10 +70,6 @@ services:
       - "8888:8888"
     networks:
       - single-deploy
-    develop:
-      watch:
-        - action: rebuild
-          path: ./services/golang/**/*
   nestjs-server:
     build:
       context: ./services/nestjs
@@ -83,15 +80,8 @@ services:
       - redis
     ports:
       - "3000:3000"
-    environment:
-      - MYSQL_HOST=mysql
-      - REDIS_HOST=redis
     networks:
       - single-deploy
-    develop:
-      watch:
-        - action: rebuild
-          path: ./services/nestjs/src
   nextjs-server:
     build:
       context: ./services/nextjs
@@ -116,17 +106,11 @@ services:
       dockerfile: Dockerfile_api
     restart: always
     depends_on:
-      - mysql
-      - redis
-      - etcd
+      - user-rpc
     ports:
       - "8000:8000"
     networks:
       - single-deploy
-    develop:
-      watch:
-        - action: rebuild
-          path: ./spiritchess/backend/user/api/**/*
   user-rpc:
     build:
       context: ./spiritchess/backend/user
@@ -140,10 +124,6 @@ services:
       - "9000:9000"
     networks:
       - single-deploy
-    develop:
-      watch:
-        - action: rebuild
-          path: ./spiritchess/backend/user/rpc/**/*
 networks:
   single-deploy:
     driver: bridge

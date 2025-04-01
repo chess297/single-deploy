@@ -5,8 +5,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserSchema } from './user.schema';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import configuration from './config';
-import { MysqlModule } from './mysql.module';
-import { RedisCacheModule } from './redis.module';
+import { MysqlModule } from './data/mysql.module';
+import { RedisCacheModule } from './data/redis.module';
 
 @Module({
   imports: [

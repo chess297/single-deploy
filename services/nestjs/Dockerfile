@@ -43,9 +43,11 @@ ENV NODE_ENV=production
 # ENV NEXT_TELEMETRY_DISABLED=1
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/.env ./.env
+COPY --from=builder /app/etc ./etc
 
 EXPOSE 3000
+RUN echo "$mysql"
+RUN echo "$redis"
 
 # 启动服务
 CMD [ "node", "dist/main.js" ]

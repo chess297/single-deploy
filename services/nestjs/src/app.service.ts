@@ -4,6 +4,7 @@ import { User } from './user.entity';
 import { Repository } from 'typeorm';
 import Redis from 'ioredis';
 import { InjectRedis } from '@nestjs-modules/ioredis';
+import { getOpenCreate } from './config';
 
 @Injectable()
 export class AppService {
@@ -17,7 +18,7 @@ export class AppService {
     const password = randomString(20);
     user.username = username;
     user.password = password;
-    if (process.env.OPEN_CREATE) {
+    if (getOpenCreate()) {
       this.usersRepository
         .insert(user)
         .then(() => {

@@ -1,0 +1,14 @@
+cache:
+  host: redis
+  port: 6379
+  username: default
+  password: single_deploy
+
+db:
+  type: mysql
+  host: mysql
+  port: 3306
+  database: single_deploy
+  username: root
+  password: single_deploy
+open_create: true
