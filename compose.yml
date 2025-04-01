@@ -1,16 +1,16 @@
 services:
-  # mysql:
-  #   image: mysql:8.2
-  #   restart: always
-  #   volumes:
-  #     - ./mysql/data:/var/lib/mysql
-  #     - ./mysql/logs:/var/log/mysql
-  #   environment:
-  #     MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-  #   ports:
-  #     - 3306:3306
-  #   networks:
-  #     - single-deploy
+  mysql:
+    image: mysql:8.2
+    restart: always
+    volumes:
+      - ./mysql/data:/var/lib/mysql
+      - ./mysql/logs:/var/log/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    ports:
+      - 3306:3306
+    networks:
+      - single-deploy
   redis:
     image: redis
     restart: always
@@ -23,127 +23,127 @@ services:
       - ./redis/logs:/var/log/redis
     networks:
       - single-deploy
-  # etcd:
-  #   hostname: etcd
-  #   image: bitnami/etcd:latest
-  #   volumes:
-  #     - "./etcd/data:/bitnami/etcd/data"
-  #     - "./etcd/logs:/bitnami/etcd/logs"
-  #   environment:
-  #     - ETCD_ENABLE_V2=true
-  #     - ALLOW_NONE_AUTHENTICATION=yes
-  #     - ETCD_ADVERTISE_CLIENT_URLS=http://etcd:2379
-  #     - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
-  #     - ETCD_NAME=etcd
-  #   ports:
-  #     - "2379:2379"
-  #     - "2380:2380"
-  #   networks:
-  #     - single-deploy
-  # nginx:
-  #   image: nginx:latest
-  #   restart: always
-  #   depends_on:
-  #     - golang-server
-  #     - nestjs-server
-  #     - user-api
-  #   ports:
-  #     - "80:80"
-  #     - "443:443"
-  #   volumes:
-  #     - ./nginx/conf.d:/etc/nginx/conf.d
-  #     - ./nginx/html:/usr/share/nginx/html
-  #     - ./nginx/logs:/var/log/nginx
-  #     - ./nginx/crts:/etc/nginx/crts
-  #   networks:
-  #     - single-deploy
-  # golang-server:
-  #   build:
-  #     context: ./services/golang
-  #     dockerfile: Dockerfile
-  #   restart: always
-  #   depends_on:
-  #     - mysql
-  #     - redis
-  #   ports:
-  #     - "8888:8888"
-  #   networks:
-  #     - single-deploy
-  #   develop:
-  #     watch:
-  #       - action: rebuild
-  #         path: ./services/golang/**/*
-  # nestjs-server:
-  #   build:
-  #     context: ./services/nestjs
-  #     dockerfile: Dockerfile
-  #   restart: always
-  #   depends_on:
-  #     - mysql
-  #     - redis
-  #   ports:
-  #     - "3000:3000"
-  #   environment:
-  #     - MYSQL_HOST=mysql
-  #     - REDIS_HOST=redis
-  #   networks:
-  #     - single-deploy
-  #   develop:
-  #     watch:
-  #       - action: rebuild
-  #         path: ./services/nestjs/src
-  # nextjs-server:
-  #   build:
-  #     context: ./services/nextjs
-  #     dockerfile: Dockerfile
-  #   restart: always
-  #   ports:
-  #     - "3001:3001"
-  #   networks:
-  #     - single-deploy
-  # react-express:
-  #   build:
-  #     context: ./services/react-express
-  #     dockerfile: Dockerfile
-  #   restart: always
-  #   ports:
-  #     - "3002:3002"
-  #   networks:
-  #     - single-deploy
-  # user-api:
-  #   build:
-  #     context: ./spiritchess/backend/user
-  #     dockerfile: Dockerfile_api
-  #   restart: always
-  #   depends_on:
-  #     - mysql
-  #     - redis
-  #     - etcd
-  #   ports:
-  #     - "8000:8000"
-  #   networks:
-  #     - single-deploy
-  #   develop:
-  #     watch:
-  #       - action: rebuild
-  #         path: ./spiritchess/backend/user/api/**/*
-  # user-rpc:
-  #   build:
-  #     context: ./spiritchess/backend/user
-  #     dockerfile: Dockerfile_rpc
-  #   restart: always
-  #   depends_on:
-  #     - mysql
-  #     - redis
-  #     - etcd
-  #   ports:
-  #     - "9000:9000"
-  #   networks:
-  #     - single-deploy
-  #   develop:
-  #     watch:
-  #       - action: rebuild
-  #         path: ./spiritchess/backend/user/rpc/**/*
+  etcd:
+    hostname: etcd
+    image: bitnami/etcd:latest
+    volumes:
+      - "./etcd/data:/bitnami/etcd/data"
+      - "./etcd/logs:/bitnami/etcd/logs"
+    environment:
+      - ETCD_ENABLE_V2=true
+      - ALLOW_NONE_AUTHENTICATION=yes
+      - ETCD_ADVERTISE_CLIENT_URLS=http://etcd:2379
+      - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
+      - ETCD_NAME=etcd
+    ports:
+      - "2379:2379"
+      - "2380:2380"
+    networks:
+      - single-deploy
+  nginx:
+    image: nginx:latest
+    restart: always
+    depends_on:
+      - golang-server
+      - nestjs-server
+      - user-api
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/html:/usr/share/nginx/html
+      - ./nginx/logs:/var/log/nginx
+      - ./nginx/crts:/etc/nginx/crts
+    networks:
+      - single-deploy
+  golang-server:
+    build:
+      context: ./services/golang
+      dockerfile: Dockerfile
+    restart: always
+    depends_on:
+      - mysql
+      - redis
+    ports:
+      - "8888:8888"
+    networks:
+      - single-deploy
+    develop:
+      watch:
+        - action: rebuild
+          path: ./services/golang/**/*
+  nestjs-server:
+    build:
+      context: ./services/nestjs
+      dockerfile: Dockerfile
+    restart: always
+    depends_on:
+      - mysql
+      - redis
+    ports:
+      - "3000:3000"
+    environment:
+      - MYSQL_HOST=mysql
+      - REDIS_HOST=redis
+    networks:
+      - single-deploy
+    develop:
+      watch:
+        - action: rebuild
+          path: ./services/nestjs/src
+  nextjs-server:
+    build:
+      context: ./services/nextjs
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "3001:3001"
+    networks:
+      - single-deploy
+  react-express:
+    build:
+      context: ./services/react-express
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "3002:3002"
+    networks:
+      - single-deploy
+  user-api:
+    build:
+      context: ./spiritchess/backend/user
+      dockerfile: Dockerfile_api
+    restart: always
+    depends_on:
+      - mysql
+      - redis
+      - etcd
+    ports:
+      - "8000:8000"
+    networks:
+      - single-deploy
+    develop:
+      watch:
+        - action: rebuild
+          path: ./spiritchess/backend/user/api/**/*
+  user-rpc:
+    build:
+      context: ./spiritchess/backend/user
+      dockerfile: Dockerfile_rpc
+    restart: always
+    depends_on:
+      - mysql
+      - redis
+      - etcd
+    ports:
+      - "9000:9000"
+    networks:
+      - single-deploy
+    develop:
+      watch:
+        - action: rebuild
+          path: ./spiritchess/backend/user/rpc/**/*
 networks:
   single-deploy:
     driver: bridge
