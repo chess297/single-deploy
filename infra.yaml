@@ -41,3 +41,8 @@ services:
       - "2380:2380"
     networks:
       - single-deploy
+  kafka:
+    image: apache/kafka:latest
+    restart: always
+    ports:
+      - 9092:9092

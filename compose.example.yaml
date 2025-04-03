@@ -1,34 +1,41 @@
 services:
-  golang-server:
+  nginx:
+    depends_on:
+      - golang-example
+      - nestjs-example
+      - react-express-example
+    environment:
+      - PROXY_DIR=proxy_example
+  golang-example:
     build:
-      context: ./services/golang
+      context: ./examples/golang
       dockerfile: Dockerfile
     restart: always
     depends_on:
       - mysql
       - redis
     ports:
-      - "8888:8888"
+      - "3500:8888"
     networks:
       - single-deploy
-  nestjs-server:
+  nestjs-example:
     build:
-      context: ./services/nestjs
+      context: ./examples/nestjs
       dockerfile: Dockerfile
     restart: always
     depends_on:
       - mysql
       - redis
     ports:
-      - "3000:3000"
+      - "3501:3000"
     networks:
       - single-deploy
-  react-express:
+  react-express-example:
     build:
-      context: ./services/react-express
+      context: ./examples/react-express
       dockerfile: Dockerfile
     restart: always
     ports:
-      - "3002:3002"
+      - "3502:3002"
     networks:
       - single-deploy

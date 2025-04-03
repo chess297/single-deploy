@@ -29,7 +29,7 @@ server {
     include /etc/nginx/conf.d/${PROXY_DIR}/*.conf;
 
     location / {
-        proxy_pass   http://nextjs-server:3001/;
+        proxy_pass   http://spiritchess.cn:8000/;
         # 传递原始请求的主机头
         proxy_set_header Host $host;
         # 传递原始请求的客户端 IP 地址

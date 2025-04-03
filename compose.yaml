@@ -5,12 +5,15 @@ services:
     image: nginx:latest
     restart: always
     depends_on:
+      - spiritchess.cn
       - user-api
     ports:
       - "80:80"
       - "443:443"
+    environment:
+      - TZ=Asia/Shanghai
+      - PROXY_DIR=proxy_prod
     volumes:
-      # - ./nginx/conf.d:/etc/nginx/conf.d
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./nginx/html:/usr/share/nginx/html
       - ./nginx/logs:/var/log/nginx
@@ -18,13 +21,13 @@ services:
       - ./nginx/templates:/etc/nginx/templates
     networks:
       - single-deploy
-  nextjs-server:
+  spiritchess.cn:
     build:
-      context: ./services/nextjs
+      context: ./spiritchess.cn
       dockerfile: Dockerfile
     restart: always
     ports:
-      - "3001:3001"
+      - "3000:3000"
     networks:
       - single-deploy
   user-api:
