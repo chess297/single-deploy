@@ -1,0 +1,43 @@
+services:
+  mysql:
+    image: mysql:8.2
+    restart: always
+    volumes:
+      - ./mysql/data:/var/lib/mysql
+      - ./mysql/logs:/var/log/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    ports:
+      - 3306:3306
+    networks:
+      - single-deploy
+  redis:
+    image: redis
+    restart: always
+    ports:
+      - 6379:6379
+
+    volumes:
+      - ./redis/data:/data
+      - ./redis/logs:/var/log/redis
+    command:
+      - --requirepass $REDIS_PASSWORD
+    networks:
+      - single-deploy
+  etcd:
+    hostname: etcd
+    image: bitnami/etcd:latest
+    volumes:
+      - "./etcd/data:/bitnami/etcd/data"
+      - "./etcd/logs:/bitnami/etcd/logs"
+    environment:
+      - ETCD_ENABLE_V2=true
+      - ALLOW_NONE_AUTHENTICATION=yes
+      - ETCD_ADVERTISE_CLIENT_URLS=http://etcd:2379
+      - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
+      - ETCD_NAME=etcd
+    ports:
+      - "2379:2379"
+      - "2380:2380"
+    networks:
+      - single-deploy

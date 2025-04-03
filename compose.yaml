@@ -1,0 +1,58 @@
+include:
+  - infra.yaml
+services:
+  nginx:
+    image: nginx:latest
+    restart: always
+    depends_on:
+      - user-api
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      # - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/html:/usr/share/nginx/html
+      - ./nginx/logs:/var/log/nginx
+      - ./nginx/crts:/etc/nginx/crts
+      - ./nginx/templates:/etc/nginx/templates
+    networks:
+      - single-deploy
+  nextjs-server:
+    build:
+      context: ./services/nextjs
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "3001:3001"
+    networks:
+      - single-deploy
+  user-api:
+    build:
+      context: ./spiritchess/backend/user
+      dockerfile: Dockerfile_api
+    restart: always
+    depends_on:
+      - user-rpc
+    ports:
+      - "8000:8000"
+    networks:
+      - single-deploy
+  user-rpc:
+    build:
+      context: ./spiritchess/backend/user
+      dockerfile: Dockerfile_rpc
+    restart: always
+    depends_on:
+      - mysql
+      - redis
+      - etcd
+    ports:
+      - "9000:9000"
+    networks:
+      - single-deploy
+networks:
+  single-deploy:
+    driver: bridge
+  app-tier:
+    driver: bridge

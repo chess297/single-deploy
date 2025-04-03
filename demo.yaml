@@ -1,0 +1,34 @@
+services:
+  golang-server:
+    build:
+      context: ./services/golang
+      dockerfile: Dockerfile
+    restart: always
+    depends_on:
+      - mysql
+      - redis
+    ports:
+      - "8888:8888"
+    networks:
+      - single-deploy
+  nestjs-server:
+    build:
+      context: ./services/nestjs
+      dockerfile: Dockerfile
+    restart: always
+    depends_on:
+      - mysql
+      - redis
+    ports:
+      - "3000:3000"
+    networks:
+      - single-deploy
+  react-express:
+    build:
+      context: ./services/react-express
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "3002:3002"
+    networks:
+      - single-deploy

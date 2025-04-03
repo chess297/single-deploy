@@ -1,0 +1,12 @@
+services:
+  nginx:
+    environment:
+      - TZ=Asia/Shanghai
+      - ENVIRONMENT=production
+      - PROXY_DIR=proxy_prod
+  user-api:
+    environment:
+      - ENVIRONMENT=production
+  user-rpc:
+    environment:
+      - ENVIRONMENT=production
