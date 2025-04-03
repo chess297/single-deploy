@@ -14,8 +14,6 @@ services:
     depends_on:
       - mysql
       - redis
-    ports:
-      - "3500:8888"
     networks:
       - single-deploy
   nestjs-example:
@@ -26,8 +24,6 @@ services:
     depends_on:
       - mysql
       - redis
-    ports:
-      - "3501:3000"
     networks:
       - single-deploy
   react-express-example:
@@ -35,7 +31,8 @@ services:
       context: ./examples/react-express
       dockerfile: Dockerfile
     restart: always
-    ports:
-      - "3502:3002"
     networks:
       - single-deploy
+networks:
+  single-deploy:
+    driver: bridge

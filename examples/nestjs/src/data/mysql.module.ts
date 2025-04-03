@@ -23,7 +23,7 @@ import { getDBConfig } from '../config';
           port: dbConfig.port,
           type: 'mysql',
           entities: [User],
-          synchronize: true,
+          // synchronize: true, // 千万不要用
         };
       },
     }),

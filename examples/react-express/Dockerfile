@@ -43,8 +43,7 @@ WORKDIR /app
 ENV NODE_ENV=production
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/server ./server
-EXPOSE 3002
-ENV PORT=3002
+EXPOSE 3000
 
 ENV HOSTNAME="0.0.0.0"
 CMD ["node", "server/index.js"]

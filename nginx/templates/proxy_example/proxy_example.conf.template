@@ -1,6 +1,6 @@
 
-location /example/golang {
-    proxy_pass   http://golang-example:3500/;
+location /example/golang/ {
+    proxy_pass   http://golang-example:8888/;
     # 传递原始请求的主机头
     proxy_set_header Host $host;
     # 传递原始请求的客户端 IP 地址
@@ -12,8 +12,8 @@ location /example/golang {
 }
 
 
-location /example/nestjs {
-    proxy_pass   http://nestjs-example:3501/;
+location /example/nestjs/ {
+    proxy_pass   http://nestjs-example:3000/;
     # 传递原始请求的主机头
     proxy_set_header Host $host;
     # 传递原始请求的客户端 IP 地址
@@ -26,7 +26,7 @@ location /example/nestjs {
 
 
 location /example/react-express-example {
-    proxy_pass   http://react-express-example:3502/;
+    proxy_pass   http://react-express-example:3000/;
     # 传递原始请求的主机头
     proxy_set_header Host $host;
     # 传递原始请求的客户端 IP 地址
