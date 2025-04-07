@@ -10,7 +10,7 @@ services:
     ports:
       - 3306:3306
     networks:
-      - single-deploy
+      - nginx-proxy
   redis:
     image: redis
     restart: always
@@ -23,7 +23,7 @@ services:
     command:
       - --requirepass $REDIS_PASSWORD
     networks:
-      - single-deploy
+      - nginx-proxy
   etcd:
     hostname: etcd
     image: bitnami/etcd:latest
@@ -40,7 +40,7 @@ services:
       - "2379:2379"
       - "2380:2380"
     networks:
-      - single-deploy
+      - nginx-proxy
   kafka:
     image: apache/kafka:latest
     restart: always

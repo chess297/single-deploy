@@ -19,14 +19,11 @@ services:
       - ./nginx/crts:/etc/nginx/crts
       - ./nginx/templates:/etc/nginx/templates
     networks:
-      - single-deploy
-  spiritchess.cn:
-    build:
-      context: ./spiritchess.cn
-      dockerfile: Dockerfile
-    restart: always
-    networks:
-      - single-deploy
+      - nginx-proxy
 networks:
-  single-deploy:
+  frontend:
+    driver: bridge
+  backend:
+    driver: bridge
+  nginx-proxy:
     driver: bridge

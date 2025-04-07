@@ -15,7 +15,7 @@ services:
       - mysql
       - redis
     networks:
-      - single-deploy
+      - nginx-proxy
   nestjs-example:
     build:
       context: ./examples/nestjs
@@ -25,14 +25,21 @@ services:
       - mysql
       - redis
     networks:
-      - single-deploy
+      - nginx-proxy
   react-express-example:
     build:
       context: ./examples/react-express
       dockerfile: Dockerfile
     restart: always
     networks:
-      - single-deploy
+      - nginx-proxy
+  spiritchess.cn:
+    build:
+      context: ./spiritchess.cn
+      dockerfile: Dockerfile
+    restart: always
+    networks:
+      - nginx-proxy
 networks:
-  single-deploy:
+  nginx-proxy:
     driver: bridge
